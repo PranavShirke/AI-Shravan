@@ -1,0 +1,9 @@
+pip install -r requirements.txt
+
+this command will download all the dependencies that are mentioned in requirement.txt 
+make sure that requirement.txt is there within ur project folder 
+
+and also before running the pip install command download GIT not GITHUB or GITHUB DESKTOP but just GIT 
+so that it can download all dependencies without any issue..... 
+
+also this is someone else project and requires a lot of GPU power if not given the project might be laggy 
