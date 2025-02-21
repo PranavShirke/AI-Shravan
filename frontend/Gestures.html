@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #11284a;
+            color: #ffffff;
+            text-align: center;
+        }
+        .container-fluid {
+            margin-top: 50px;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #112240, #1a3d71);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 28px;
+            color: cyan;
+            text-shadow: 0 0 10px cyan;
+            transition: 0.3s;
+        }
+
+        .navbar-brand:hover {
+            color: white;
+            text-shadow: 0 0 20px white;
+        }
+
+        .navbar-nav .nav-link {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 15px;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: cyan;
+        }
+
+        .btn-outline-cyan {
+            color: cyan;
+            border: 2px solid cyan;
+            padding: 8px 15px;
+            font-weight: bold;
+            transition: 0.3s;
+            border-radius: 8px;
+        }
+
+        .btn-outline-cyan:hover {
+            background: cyan;
+            color: #223454;
+        }
+
+        .card {
+            background: #1b386a;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 10px 10px 20px #081828, -10px -10px 20px #1a2b4a;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card:hover {
+            box-shadow: 0px 0px 20px cyan;
+        }
+        .card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .card-title {
+            margin-top: 10px;
+            font-size: 1.5rem;
+            color: cyan;
+            text-shadow: 0px 0px 10px cyan;
+        }
+
+        /* Footer Styling */
+        .footer {
+            background: #112240;
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
+            box-shadow: 0px -4px 10px rgba(0, 255, 255, 0.2);
+        }
+        .footer .nav-link {
+            color: cyan;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+        .footer .nav-link:hover {
+            color: white;
+            text-shadow: 0px 0px 10px cyan;
+        }
+        .footer p {
+            margin-top: 10px;
+            color: #aaa;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Bridging the Silence: an AI driven solution</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#offerings">Offerings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+                <a href="#" class="btn btn-outline-cyan ms-3">Get Started</a>
+            </div>
+        </div>
+    </nav>
+<h1 style="color: aqua; margin-top: 15px;">Hand Gestures</h1>
+    <div class="container-fluid">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./goodbye.png" alt="Goodbye" class="img-fluid">
+                    <h3 class="card-title">Goodbye</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./yes.png" alt="Yes" class="img-fluid">
+                    <h3 class="card-title">Yes</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./family.png" alt="Family" class="img-fluid">
+                    <h3 class="card-title">Family</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./love.png" alt="I Love You" class="img-fluid">
+                    <h3 class="card-title">I Love You</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./no.png" alt="No" class="img-fluid">
+                    <h3 class="card-title">No</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./help.png" alt="Help" class="img-fluid">
+                    <h3 class="card-title">Help</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./sorry.png" alt="Sorry" class="img-fluid">
+                    <h3 class="card-title">Sorry</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./fear.png" alt="Thumbs Up" class="img-fluid">
+                    <h3 class="card-title">Fear</h3>
+                </div>
+            </div>
+            <div class="col text-center">
+                <div class="card">
+                    <img src="./excuseme.png" alt="Excuse Me" class="img-fluid">
+                    <h3 class="card-title">Excuse Me</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+            </ul>
+            <p class="text-center">© 2024 Bridging the Silence, Inc</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
