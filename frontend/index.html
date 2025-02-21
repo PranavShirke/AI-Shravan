@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASL Gesture Recognition</title>
+
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+    <!-- MediaPipe -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1620248257"></script>
+
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        video, canvas { 
+            width: 640px; 
+            height: 480px; 
+            border: 2px solid black;
+            position: relative;
+            background-color: #fff;
+        }
+        canvas { 
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #output { 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-top: 20px; 
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+        #debug { 
+            color: red; 
+            margin-top: 10px; 
+        }
+        .gesture-guide {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .gesture-guide h3 {
+            color: #333;
+        }
+        #gestureText {
+            color: #2196F3;
+            font-size: 28px;
+            display: inline-block;
+            padding: 5px 15px;
+            background: #e3f2fd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ASL Gesture Recognition</h2>
+        <div style="position: relative; margin-bottom: 500px;">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+        </div>
+        <p id="output">Detected Sign: <span id="gestureText">None</span></p>
+        <p id="debug"></p>
+        
+        <div class="gesture-guide">
+            <h3>Supported ASL Signs:</h3>
+            <ul id="gestureList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const outputText = document.getElementById('gestureText');
+        const debugElement = document.getElementById('debug');
+        const gestureList = document.getElementById('gestureList');
+
+        let handProcessor;
+        let lastGesture = "None";
+        let gestureConfidence = 0;
+        const GESTURE_THRESHOLD = 5; // Number of consecutive frames needed to confirm a gesture
+
+        // Define ASL gestures and their finger positions
+        const aslGestures = {
+            "HELLO": {
+                description: "Open hand, palm forward, fingers spread",
+                checkGesture: (landmarks) => {
+                    return isHandOpen(landmarks);
+                }
+            },
+            "THANK YOU": {
+                description: "Flat hand moves forward and down from the chin",
+                checkGesture: (landmarks) => {
+                    return isHandFlat(landmarks);
+                }
+            },
+            "PLEASE": {
+                description: "Flat hand circling over the chest",
+                checkGesture: (landmarks) => {
+                    return isHandFlat(landmarks) && isNearChest(landmarks);
+                }
+            },
+            "YES": {
+                description: "Fist with nodding motion",
+                checkGesture: (landmarks) => {
+                    return isFist(landmarks);
+                }
+            },
+            "NO": {
+                description: "Index and middle finger extended like scissors",
+                checkGesture: (landmarks) => {
+                    return isScissorsShape(landmarks);
+                }
+            },
+            "I LOVE YOU": {
+                description: "Pinky, index finger, and thumb extended",
+                checkGesture: (landmarks) => {
+                    return isILoveYou(landmarks);
+                }
+            },
+            "PEACE": {
+                description: "Index and middle finger extended, palm facing out",
+                checkGesture: (landmarks) => {
+                    return isPeaceSign(landmarks);
+                }
+            },
+            "THUMBS UP": {
+                description: "Thumb extended, other fingers closed",
+                checkGesture: (landmarks) => {
+                    return isThumbsUp(landmarks);
+                }
+            }
+        };
+
+        // Populate gesture guide
+        Object.entries(aslGestures).forEach(([gesture, info]) => {
+            const li = document.createElement('li');
+            li.textContent = `${gesture}: ${info.description}`;
+            gestureList.appendChild(li);
+        });
+
+        function debug(message) {
+            console.log(message);
+            debugElement.textContent = message;
+        }
+
+        // Helper functions for gesture detection
+        function isHandOpen(landmarks) {
+            const fingerTips = [8, 12, 16, 20];
+            const palmBase = landmarks[0];
+            return fingerTips.every(tip => landmarks[tip].y < palmBase.y);
+        }
+
+        function isHandFlat(landmarks) {
+            const fingerTips = [8, 12, 16, 20];
+            const yPositions = fingerTips.map(tip => landmarks[tip].y);
+            const yVariance = Math.max(...yPositions) - Math.min(...yPositions);
+            return yVariance < 0.1;
+        }
+
+        function isFist(landmarks) {
+            const fingerTips = [8, 12, 16, 20];
+            const palmBase = landmarks[0];
+            return fingerTips.every(tip => landmarks[tip].y > palmBase.y);
+        }
+
+        function isScissorsShape(landmarks) {
+            return landmarks[8].y < landmarks[5].y && 
+                   landmarks[12].y < landmarks[9].y && 
+                   landmarks[16].y > landmarks[13].y && 
+                   landmarks[20].y > landmarks[17].y;
+        }
+
+        function isILoveYou(landmarks) {
+            return landmarks[20].y < landmarks[17].y && 
+                   landmarks[8].y < landmarks[5].y && 
+                   landmarks[4].x < landmarks[3].x;
+        }
+
+        function isPeaceSign(landmarks) {
+            return landmarks[8].y < landmarks[5].y && 
+                   landmarks[12].y < landmarks[9].y && 
+                   landmarks[16].y > landmarks[13].y && 
+                   landmarks[20].y > landmarks[17].y;
+        }
+
+        function isThumbsUp(landmarks) {
+            return landmarks[4].y < landmarks[3].y && 
+                   landmarks[8].y > landmarks[5].y && 
+                   landmarks[12].y > landmarks[9].y && 
+                   landmarks[16].y > landmarks[13].y && 
+                   landmarks[20].y > landmarks[17].y;
+        }
+
+        function isNearChest(landmarks) {
+            return landmarks[0].y > 0.5;
+        }
+
+        function updateGestureDisplay(gesture) {
+            if (gesture === lastGesture) {
+                gestureConfidence++;
+                if (gestureConfidence >= GESTURE_THRESHOLD) {
+                    outputText.textContent = gesture;
+                }
+            } else {
+                lastGesture = gesture;
+                gestureConfidence = 0;
+            }
+        }
+
+        function initializeHandTracking() {
+            handProcessor = new Hands({
+                locateFile: (file) => {
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`;
+                }
+            });
+
+            handProcessor.setOptions({
+                maxNumHands: 1,
+                modelComplexity: 1,
+                minDetectionConfidence: 0.7,  // Increased confidence threshold
+                minTrackingConfidence: 0.7    // Increased tracking threshold
+            });
+
+            handProcessor.onResults(onResults);
+
+            const camera = new Camera(video, {
+                onFrame: async () => {
+                    try {
+                        await handProcessor.send({ image: video });
+                    } catch (error) {
+                        debug("❌ MediaPipe Processing Error: " + error.message);
+                    }
+                },
+                width: 640,
+                height: 480
+            });
+
+            camera.start()
+                .then(() => debug("✅ Camera Pipeline Started"))
+                .catch(error => debug("❌ Camera Pipeline Error: " + error.message));
+        }
+
+        function onResults(results) {
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const landmarks = results.multiHandLandmarks[0];
+                
+                // Draw landmarks
+                drawConnectors(ctx, landmarks, HAND_CONNECTIONS, {
+                    color: '#00FF00',
+                    lineWidth: 5
+                });
+                drawLandmarks(ctx, landmarks, {
+                    color: '#FF0000',
+                    lineWidth: 2
+                });
+
+                // Check for ASL gestures
+                recognizeASLGesture(landmarks);
+                
+                debug("✅ Hand Detected - Processing Gesture");
+            } else {
+                updateGestureDisplay("None");
+                debug("⚠️ No hands detected - Make sure your hand is visible in the frame");
+            }
+
+            ctx.restore();
+        }
+
+        function recognizeASLGesture(landmarks) {
+            let detectedGesture = "Unknown";
+            
+            for (const [gesture, info] of Object.entries(aslGestures)) {
+                if (info.checkGesture(landmarks)) {
+                    detectedGesture = gesture;
+                    break;
+                }
+            }
+            
+            updateGestureDisplay(detectedGesture);
+        }
+
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 640,
+                        height: 480,
+                        facingMode: 'user'
+                    } 
+                });
+                video.srcObject = stream;
+                video.width = 640;
+                video.height = 480;
+                canvas.width = 640;
+                canvas.height = 480;
+                
+                await new Promise((resolve) => {
+                    video.onloadeddata = () => {
+                        resolve();
+                    };
+                });
+                
+                debug("✅ Camera Started Successfully");
+                initializeHandTracking();
+            } catch (error) {
+                debug("❌ Webcam Access Error: " + error.message);
+            }
+        }
+
+        // Start the application
+        startCamera();
+    </script>
+</body>
+</html>
