@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Speech-to-Text Converter</h2>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <button id="startButton" class="btn btn-primary">Start Recording</button>
+                        <button id="stopButton" class="btn btn-danger" disabled>Stop Recording</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="transcription">Transcription:</label>
+                        <textarea id="transcription" class="form-control" rows="5" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let recognition;
+
+if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+            .map(result => result[0])
+            .map(result => result.transcript)
+            .join('');
+        document.getElementById('transcription').value = transcript;
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+    };
+} else {
+    alert('Speech recognition is not supported in this browser.');
+}
+
+document.getElementById('startButton').addEventListener('click', () => {
+    recognition.start();
+    document.getElementById('startButton').disabled = true;
+    document.getElementById('stopButton').disabled = false;
+});
+
+document.getElementById('stopButton').addEventListener('click', () => {
+    recognition.stop();
+    document.getElementById('startButton').disabled = false;
+    document.getElementById('stopButton').disabled = true;
+});
+</script>
+{% endblock %} 

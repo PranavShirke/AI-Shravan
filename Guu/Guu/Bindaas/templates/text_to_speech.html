@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Text-to-Speech Converter</h2>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label for="text-input">Enter Text:</label>
+                        <textarea id="text-input" class="form-control" rows="5" placeholder="Type or paste your text here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="voice-select">Select Voice:</label>
+                        <select id="voice-select" class="form-control"></select>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="rate-range">Speech Rate:</label>
+                        <input type="range" id="rate-range" class="form-range" min="0.5" max="2" step="0.1" value="1">
+                        <span id="rate-value">1.0</span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="pitch-range">Pitch:</label>
+                        <input type="range" id="pitch-range" class="form-range" min="0.5" max="2" step="0.1" value="1">
+                        <span id="pitch-value">1.0</span>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button id="speak-button" class="btn btn-primary me-2">Speak</button>
+                        <button id="pause-button" class="btn btn-warning me-2" disabled>Pause</button>
+                        <button id="resume-button" class="btn btn-info me-2" disabled>Resume</button>
+                        <button id="stop-button" class="btn btn-danger" disabled>Stop</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let speechSynth = window.speechSynthesis;
+let voices = [];
+
+// Populate voice select
+function populateVoices() {
+    voices = speechSynth.getVoices();
+    const voiceSelect = document.getElementById('voice-select');
+    voiceSelect.innerHTML = '';
+    
+    voices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+    });
+}
+
+// Initialize voices
+speechSynth.onvoiceschanged = populateVoices;
+
+// Update range values
+document.getElementById('rate-range').addEventListener('input', function(e) {
+    document.getElementById('rate-value').textContent = e.target.value;
+});
+
+document.getElementById('pitch-range').addEventListener('input', function(e) {
+    document.getElementById('pitch-value').textContent = e.target.value;
+});
+
+// Speech controls
+document.getElementById('speak-button').addEventListener('click', function() {
+    if (speechSynth.speaking) {
+        speechSynth.cancel();
+    }
+    
+    const text = document.getElementById('text-input').value;
+    if (text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Set voice
+        const voiceIndex = document.getElementById('voice-select').value;
+        utterance.voice = voices[voiceIndex];
+        
+        // Set rate and pitch
+        utterance.rate = parseFloat(document.getElementById('rate-range').value);
+        utterance.pitch = parseFloat(document.getElementById('pitch-range').value);
+        
+        // Enable/disable buttons
+        document.getElementById('speak-button').disabled = true;
+        document.getElementById('pause-button').disabled = false;
+        document.getElementById('stop-button').disabled = false;
+        
+        utterance.onend = function() {
+            document.getElementById('speak-button').disabled = false;
+            document.getElementById('pause-button').disabled = true;
+            document.getElementById('resume-button').disabled = true;
+            document.getElementById('stop-button').disabled = true;
+        };
+        
+        speechSynth.speak(utterance);
+    }
+});
+
+document.getElementById('pause-button').addEventListener('click', function() {
+    if (speechSynth.speaking) {
+        speechSynth.pause();
+        document.getElementById('pause-button').disabled = true;
+        document.getElementById('resume-button').disabled = false;
+    }
+});
+
+document.getElementById('resume-button').addEventListener('click', function() {
+    if (speechSynth.paused) {
+        speechSynth.resume();
+        document.getElementById('pause-button').disabled = false;
+        document.getElementById('resume-button').disabled = true;
+    }
+});
+
+document.getElementById('stop-button').addEventListener('click', function() {
+    speechSynth.cancel();
+    document.getElementById('speak-button').disabled = false;
+    document.getElementById('pause-button').disabled = true;
+    document.getElementById('resume-button').disabled = true;
+    document.getElementById('stop-button').disabled = true;
+});
+</script>
+{% endblock %} 

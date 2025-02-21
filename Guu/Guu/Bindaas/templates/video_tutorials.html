@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Video Tutorials</h2>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Upload New Tutorial</h5>
+                    <form id="upload-form" class="mb-3">
+                        <div class="mb-3">
+                            <label for="video-title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="video-title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="video-file" class="form-label">Video File</label>
+                            <input type="file" class="form-control" id="video-file" accept="video/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Available Tutorials</h5>
+                    <div id="video-list" class="list-group">
+                        <!-- Sample tutorials -->
+                        <div class="list-group-item">
+                            <h5 class="mb-1">Introduction to Sign Language</h5>
+                            <video class="w-100 mt-2" controls>
+                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="list-group-item">
+                            <h5 class="mb-1">Basic Gestures Tutorial</h5>
+                            <video class="w-100 mt-2" controls>
+                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('upload-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('video-title').value;
+    const file = document.getElementById('video-file').files[0];
+    
+    if (file) {
+        // Create new video element
+        const videoItem = document.createElement('div');
+        videoItem.className = 'list-group-item';
+        
+        const titleElement = document.createElement('h5');
+        titleElement.className = 'mb-1';
+        titleElement.textContent = title;
+        
+        const video = document.createElement('video');
+        video.className = 'w-100 mt-2';
+        video.controls = true;
+        
+        const source = document.createElement('source');
+        source.src = URL.createObjectURL(file);
+        source.type = file.type;
+        
+        video.appendChild(source);
+        videoItem.appendChild(titleElement);
+        videoItem.appendChild(video);
+        
+        // Add to the beginning of the list
+        const videoList = document.getElementById('video-list');
+        videoList.insertBefore(videoItem, videoList.firstChild);
+        
+        // Reset form
+        e.target.reset();
+    }
+});
+</script>
+{% endblock %} 
