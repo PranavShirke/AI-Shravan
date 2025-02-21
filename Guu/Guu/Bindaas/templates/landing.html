@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shravan</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.css">
+</head>
+<body>
+    <div id="nav">
+        <h3><b>Team</b>SkillIssue</h3>
+        <a href="{% url 'home' %}"><button style="background-color: black; border-radius: 25px; color: white; padding: 10px 20px; cursor: pointer;">GO TO HOME</button></a>
+    </div>
+    <div id="main">
+        <div id="page">
+            <div id="loop">
+                <h1><b> BRIDGING </b>SILENCE <b><i>WITH AI </i></b> <span>COMMUNICATION</span> FOR THE <span><i>DEAF</i></span></h1>
+                <h1><b> BRIDGING </b>SILENCE <b><i>WITH AI </i></b> <span>COMMUNICATION</span> FOR THE <span><i>DEAF</i></span></h1>
+                <h1><b> BRIDGING </b>SILENCE <b><i>WITH AI </i></b> <span>COMMUNICATION</span> FOR THE <span><i>DEAF</i></span></h1>
+            </div>
+            <h3>AN AI DRIVEN SOLUTION THAT TRIES TO <br> EMPOWER AND EDUCATE THE DEAF COMMUNITY WITH <br> AI ACCESSIBILITY.</h3>
+            <h4>...SCROLL TO READ</h4>
+            <canvas></canvas>
+        </div>
+        <div id="page1">
+            <div id="right-text">
+                <h3>AI Shravan / MAIN PAGE</h3>
+                <h1>HEAR BEYOND
+                    <br>
+                    LET'S CONNECT
+                    <br>
+                    BREAKING BARRIERS</h1>
+            </div>
+            <div id="left-text">
+                <h1>MAKE A CHANGE
+                    <br>
+                    EMPOWER VOICES
+                    <br>
+                    INCLUSIVE WORLD</h1>
+                    <h3>..AND MAINTAIN GOOD HUMANITY</h3>
+            </div>
+        </div>
+        <div id="page2">
+            <div id="text1">
+                <h3>AI Shravan / PURPOSE</h3>
+                <h1>LET'S
+                    <br>
+                    COMMUNICATE
+                    <br>
+                    TOGETHER</h1>
+            </div>
+            <div id="text2">
+                <p>LET'S REMOVE BARRIERS! LET'S OVERCOME SILENCE, <br> CONNECT WITHOUT LIMITS AND  <br> BUILD A WORLD WHERE EVERYONE CAN COMMUNICATE FREELY! <br> TOGETHER, WE CREATE A FUTURE WHERE NO VOICE GOES <br> UNHEARD. </p>
+            </div>
+        </div>
+        <div id="page3">
+            <div id="text3">
+                <h3>AI Shravan</h3>
+                <h1>
+
+FROM 
+<br>
+SILENCE TO
+<br>
+COMMUNICATION
+                </h1>
+               
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" integrity="sha512-cOH8ndwGgPo+K7pTvMrqYbmI8u8k6Sho3js0gOqVWTmQMlLIi6TbqGWRTpf1ga8ci9H3iPsvDLr4X7xwhC/+DQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js" integrity="sha512-AMl4wfwAmDM1lsQvVBBRHY..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Include Your Custom JS File -->
+    <script src="{% static 'script.js' %}"></script>
+
+</body>
+</html>
