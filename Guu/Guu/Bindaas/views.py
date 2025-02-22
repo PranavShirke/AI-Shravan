@@ -25,6 +25,9 @@ def gesture_recognition(request):
 def chatbot(request):
     return render(request, "chatbot.html")
 
+def text_to_speech(request):
+    return render(request, "text_to_speech.html")
+
 def video_tutorials(request):
     return render(request, "video_tutorials.html")
 

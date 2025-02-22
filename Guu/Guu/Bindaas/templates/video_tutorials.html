@@ -1,88 +1,183 @@
-{% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Video Tutorials</h2>
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Upload New Tutorial</h5>
-                    <form id="upload-form" class="mb-3">
-                        <div class="mb-3">
-                            <label for="video-title" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="video-title" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="video-file" class="form-label">Video File</label>
-                            <input type="file" class="form-control" id="video-file" accept="video/*" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload</button>
-                    </form>
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Video Finder</title>
+    <style>
+       /* General Styling */
+/* Animated Gradient Background */
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg,#22577A,#B5E48C, #38A3A5, #80ED99,#C7F9CC);
+    background-size: 400% 400%;
+    color: white;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: gradientBG 8s ease infinite;
+}
 
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Available Tutorials</h5>
-                    <div id="video-list" class="list-group">
-                        <!-- Sample tutorials -->
-                        <div class="list-group-item">
-                            <h5 class="mb-1">Introduction to Sign Language</h5>
-                            <video class="w-100 mt-2" controls>
-                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                        <div class="list-group-item">
-                            <h5 class="mb-1">Basic Gestures Tutorial</h5>
-                            <video class="w-100 mt-2" controls>
-                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-document.getElementById('upload-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const title = document.getElementById('video-title').value;
-    const file = document.getElementById('video-file').files[0];
-    
-    if (file) {
-        // Create new video element
-        const videoItem = document.createElement('div');
-        videoItem.className = 'list-group-item';
-        
-        const titleElement = document.createElement('h5');
-        titleElement.className = 'mb-1';
-        titleElement.textContent = title;
-        
-        const video = document.createElement('video');
-        video.className = 'w-100 mt-2';
-        video.controls = true;
-        
-        const source = document.createElement('source');
-        source.src = URL.createObjectURL(file);
-        source.type = file.type;
-        
-        video.appendChild(source);
-        videoItem.appendChild(titleElement);
-        videoItem.appendChild(video);
-        
-        // Add to the beginning of the list
-        const videoList = document.getElementById('video-list');
-        videoList.insertBefore(videoItem, videoList.firstChild);
-        
-        // Reset form
-        e.target.reset();
+/* Keyframes for Gradient Animation */
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
     }
-});
-</script>
-{% endblock %} 
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+/* Title */
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Input Field */
+input {
+    font-size: 18px;
+    padding: 12px;
+    width: 60%;
+    max-width: 400px;
+    border: none;
+    border-radius: 30px;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+input:focus {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styling */
+button {
+    font-size: 18px;
+    padding: 12px 20px;
+    margin: 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 30px;
+    background: #ffffff;
+    color: #007bff;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: #00c6ff;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Message Styling */
+#message {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* Video Container */
+#video-container {
+    margin-top: 20px;
+    display: none;
+    width: 50%;
+    height: auto;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#video-container h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+/* Video Frame */
+iframe {
+    width: 100%;
+    max-width: 900px;
+    height: 500px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+    </style>
+</head>
+<body>
+
+    <h1>Sign Language Video Finder</h1>
+    <input type="text" id="search-input" placeholder="Enter word..." />
+    <button onclick="searchVideo()">Search</button>
+    
+    <div id="message"></div>
+    
+    <div id="video-container">
+        <h3>Sign Language Video</h3>
+        <iframe id="video-frame" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        const API_KEY = "AIzaSyATqApkATZVq3_87RVymMXSXkl2_0cdTsA";  // Replace with your YouTube API Key
+
+        async function searchVideo() {
+            let word = document.getElementById("search-input").value.trim();
+            if (!word) {
+                document.getElementById("message").innerHTML = "<p style='color: red;'>Please enter a word!</p>";
+                return;
+            }
+
+            document.getElementById("message").innerHTML = "<p>Searching...</p>";
+
+            let searchQuery = `${word} ASL sign`;  // Searching for ASL sign videos
+            let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&key=${API_KEY}&maxResults=1&type=video`;
+
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+
+                if (data.items.length > 0) {
+                    let videoId = data.items[0].id.videoId;
+                    let videoUrl = `https://www.youtube.com/embed/${videoId}`;
+                    
+                    document.getElementById("video-frame").src = videoUrl;
+                    document.getElementById("video-container").style.display = "block";
+                    document.getElementById("message").innerHTML = "<p style='color: green;'>Playing video...</p>";
+                } else {
+                    document.getElementById("message").innerHTML = "<p style='color: red;'>No video found.</p>";
+                }
+            } catch (error) {
+                document.getElementById("message").innerHTML = "<p style='color: red;'>Error fetching video.</p>";
+                console.error(error);
+            }
+        }
+    </script>
+
+</body>
+</html>
+{% endblock %}
