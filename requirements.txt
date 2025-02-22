@@ -4,4 +4,7 @@ mediapipe==0.10.9
 numpy==1.26.4
 tensorflow==2.15.0
 python-dotenv==1.0.1
-gunicorn==21.2.0 
+gunicorn==21.2.0
+openai-whisper==20231117
+torch==2.1.0
+django==5.0.2 

@@ -15,6 +15,16 @@
                         <label for="transcription">Transcription:</label>
                         <textarea id="transcription" class="form-control" rows="5" readonly></textarea>
                     </div>
+                    <div class="form-group mt-3">
+                        <label for="model-select">Model:</label>
+                        <select id="model-select" class="form-control">
+                            <option value="tiny">Tiny (Fastest)</option>
+                            <option value="base">Base</option>
+                            <option value="small" selected>Small (Recommended)</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large (Most Accurate)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,38 +32,84 @@
 </div>
 
 <script>
-let recognition;
+let mediaRecorder;
+let audioChunks = [];
+const transcriptionEndpoint = '/api/transcribe/';  // You'll need to create this endpoint
 
-if ('webkitSpeechRecognition' in window) {
-    recognition = new webkitSpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-
-    recognition.onresult = (event) => {
-        const transcript = Array.from(event.results)
-            .map(result => result[0])
-            .map(result => result.transcript)
-            .join('');
-        document.getElementById('transcription').value = transcript;
-    };
-
-    recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-    };
-} else {
-    alert('Speech recognition is not supported in this browser.');
+async function startRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        
+        mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            await sendAudioForTranscription(audioBlob);
+            audioChunks = [];
+        };
+        
+        mediaRecorder.start();
+        document.getElementById('startButton').disabled = true;
+        document.getElementById('stopButton').disabled = false;
+    } catch (error) {
+        console.error('Error accessing microphone:', error);
+        alert('Error accessing microphone. Please ensure you have given permission.');
+    }
 }
 
-document.getElementById('startButton').addEventListener('click', () => {
-    recognition.start();
-    document.getElementById('startButton').disabled = true;
-    document.getElementById('stopButton').disabled = false;
-});
+async function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        document.getElementById('startButton').disabled = false;
+        document.getElementById('stopButton').disabled = true;
+    }
+}
 
-document.getElementById('stopButton').addEventListener('click', () => {
-    recognition.stop();
-    document.getElementById('startButton').disabled = false;
-    document.getElementById('stopButton').disabled = true;
-});
+async function sendAudioForTranscription(audioBlob) {
+    const formData = new FormData();
+    formData.append('audio', audioBlob);
+    formData.append('model', document.getElementById('model-select').value);
+    
+    try {
+        const response = await fetch(transcriptionEndpoint, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        });
+        
+        if (!response.ok) throw new Error('Transcription failed');
+        
+        const data = await response.json();
+        document.getElementById('transcription').value = data.text;
+    } catch (error) {
+        console.error('Transcription error:', error);
+        alert('Error during transcription. Please try again.');
+    }
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.getElementById('startButton').addEventListener('click', startRecording);
+document.getElementById('stopButton').addEventListener('click', stopRecording);
 </script>
 {% endblock %} 
