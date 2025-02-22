@@ -31,6 +31,9 @@ def text_to_speech(request):
 def video_tutorials(request):
     return render(request, "video_tutorials.html")
 
+def video_tutorial(request):
+    return render(request, "video_tutorial.html")
+
 def text_to_speech(request):
     return render(request, "text_to_speech.html")
 

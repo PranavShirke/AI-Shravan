@@ -11,7 +11,7 @@ urlpatterns = [
     path('gestures/', views.gestures, name='gestures'),
     path('text-to-speech/', views.text_to_speech, name='text_to_speech'),
     path('api/transcribe/', views.transcribe_audio, name='transcribe_audio'),
-
+    path('video_tutorial/', views.video_tutorial, name='video_tutorial'),
     path('text_to_speech/', views.text_to_speech, name='text_to_speech'),
 ]
 

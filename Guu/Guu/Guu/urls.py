@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
-from Bindaas.views import gestures, home, landing, speech_to_text, text_to_speech, gesture_recognition, chatbot, video_tutorials
+from Bindaas.views import gestures, home, landing, speech_to_text, text_to_speech, gesture_recognition, chatbot, video_tutorials, video_tutorial
 from Bindaas import views
 
 urlpatterns = [ 
@@ -12,4 +12,5 @@ urlpatterns = [
     path('gesture_recognition/', views.gesture_recognition, name='gesture_recognition'),
     path('chatbot/', views.chatbot, name ='chatbot'),
     path('video_tutorials/', views.video_tutorials, name='video_tutorials'),
+    path('video_tutorial/', views.video_tutorial, name='video_tutorial'),
 ]
