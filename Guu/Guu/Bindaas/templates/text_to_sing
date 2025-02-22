@@ -1,0 +1,182 @@
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Media Finder</title>
+    <style>
+        /* General body and page styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg,#22577A,#B5E48C, #38A3A5, #80ED99,#C7F9CC);
+            animation: gradientBG 8s ease infinite;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s ease-in-out;
+        }
+         @keyframes gradientBG {
+       0% {
+         background-position: 0% 50%;
+          }
+     50% {
+         background-position: 100% 50%;
+         }
+      100% {
+        background-position: 0% 50; }
+        }
+
+        /* Container to center the content */
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* Title styling with animation */
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Input field styling */
+        input[type="text"] {
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 80%;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        input[type="text"]:focus {
+            border-color: #6c63ff;
+            outline: none;
+        }
+
+        /* Button styling */
+        button {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            color: white;
+            background-color: #6c63ff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #5049e3;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            background-color: #3e38b0;
+        }
+
+        /* Label for input */
+        label {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        /* Animation for fading in */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Slide in effect for container */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Result label styling */
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .result.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sign Language Media Finder</h1>
+    <label for="query">Enter a word to search for sign language videos:</label><br>
+    <input type="text" id="query" placeholder="Search...">
+    <div>
+        <button onclick="playVideo()">Search Video</button>
+        <button onclick="downloadVideo()">Download Video</button>
+    </div>
+    <div id="result" class="result"></div>
+</div>
+
+<script>
+    // Function to get best YouTube video URL based on query
+    function getBestYoutubeVideo(query) {
+        const url = `https://www.youtube.com/results?search_query=${query}+ASL+sign`;
+        return url; // Return the search URL for now (could be expanded to fetch actual video links)
+    }
+
+    // Function to play the video (open in new window)
+    function playVideo() {
+        const query = document.getElementById('query').value.trim();
+        if (query) {
+            const videoUrl = getBestYoutubeVideo(query);
+            document.getElementById('result').classList.add('show');
+            document.getElementById('result').innerHTML = `Playing video: <a href="${videoUrl}" target="_blank" style="color: #6c63ff;">${videoUrl}</a>`;
+        } else {
+            alert('Please enter a valid word!');
+        }
+    }
+
+    // Function to simulate video download
+    function downloadVideo() {
+        const query = document.getElementById('query').value.trim();
+        if (query) {
+            alert(`Downloading video for: ${query}`);
+        } else {
+            alert('Please enter a valid word!');
+        }
+    }
+</script>
+
+</body>
+</html>
+{% endblock %} 
